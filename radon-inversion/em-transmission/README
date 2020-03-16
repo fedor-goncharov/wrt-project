@@ -1,0 +1,12 @@
+The code given here is base on the contents of  the book of J. Fessler, Chapter 1 : Statistical image reconstruction methods 
+for transmission tomography. For details consult his website : https://web.eecs.umich.edu/~fessler/
+
+This is our realization of the EM-algorithm for the X-ray transmission tomography. Shortly, we recall that in 
+some modalities of x-ray transmission tomography only procedures with low photon-counts are acceptable. 
+This brings us to the fact that the data is modelized by Poisson process with selection, function of interest - attenuation map 
+is related to the data by a non-linear transformation (following the Beer-Lambert law). 
+
+Here, we present code for two-dimensional reconstructions. In view of the fact that full 3D reconstructions may be obtained using slice-by-slice approach,
+this looks sufficient for the purposes of the wrt-project.  
+
+

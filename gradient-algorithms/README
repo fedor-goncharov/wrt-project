@@ -1,0 +1,8 @@
+In this folder different gradient type algorithms are placed for academic testing purposes. 
+
+In plans: 
+
+  component-wise gradient descent -- interesting for tomography because strongly depends on the initial approximation
+                                     (good for testing FBP type initial approximations)
+
+  ...
