@@ -1,19 +1,22 @@
 # Weighted ray / Radon transforms in 3D
 
 <p float="center">
-  <img src="https://github.com/fedor-goncharov/Weighted-ray-Radon-transforms-in-3D/blob/master/pictures/k_comparison_output.gif" width="360" />
-  <img src="https://github.com/fedor-goncharov/Weighted-ray-Radon-transforms-in-3D/blob/master/pictures/shepp_logan_reduction.gif" width="360" />
+  <img src="images/image_1.png" width="360" />
+  <img src="images/image_2.png" width="360" />
+  <img src="images/image_3.png" width="360" />
 </p>
 
-This is project is a part of my phd thesis conducted under the supervision of professor [Roman Novikov](http://www.cmap.polytechnique.fr/~novikov/). The thesis is now [here](http://www.theses.fr/2019SACLX029).
+This is project arose as a  part of my phd thesis conducted under the supervision of professor [Roman Novikov](http://www.cmap.polytechnique.fr/~novikov/). 
+The thesis is now [here](http://www.theses.fr/2019SACLX029). I update it very rarely, hopefully, this will change.
 
-We aim to develop new inversion methods for weighted (generalized) Radon transforms in Euclidean space. 
+The big goal is to develop new inversion methods for weighted (generalized) Radon transforms in Euclidean space. 
 The latter are of particular importance in various applications in the domain of inverse 
 problems (e.g., in tomographies, geophysics). In particular, we work on methods which 
 could be numerically more stable against the noise in tomographical data in SPECT. 
 
-The very precise theoretical explanation of given algorithms can be found in [[2,3]](http://www.cmap.polytechnique.fr/~fedor.goncharov/publications.html).
-Also my personal page is [here](http://www.cmap.polytechnique.fr/~fedor.goncharov/).
+The small goal is to put online some useful implementations on Radon-type transforms and tomography.
+This helps to keep track of my own codes and, in addition, could be of use for students of MIPT
+passing the fall course "Tomography and inverse scattering problem". 
 
 ## Some information about ray / Radon transforms
 
@@ -21,57 +24,60 @@ Here it will be the link to a pdf file with minimal information about the subjec
 
 ## Sructure of the project
 
-Here I briefly explain for what each program is intended. Details about their input, output, parameters, usage, etc., 
-you can find further in respective folders.
+Here I briefly explain for what each program is folder contains. 
+Details about compilation, usage, input/output, parameters, usage, etc., 
+you can find in README.md in respective folders.
 
-  * #### radon_inversion (Matlab / Octave)
-        Octave/Matlab scripts for inversion of classical Radon transforms in 2D/3D using projection theorem
-        or backprojection algorithms.
-  
-  * #### radon_analytic (C) 
-        computations of Radon transforms in 3D of a test-function with compact support in 
-        a three-dimensional unit ball; the main feature is that the expression of the test-function 
-        must be given by an analytical expression in a separate C file
-  
-  * #### radon_grid (C)
-        computations of Radon transforms in 3D of a test-function with compact support in 
-        a three-dimensional unit ball; here the test-function is given by its values 
-        on a discrete grid in a three-dimensional cube 
-  
-  * #### ray_analytic (C) 
-        computations of ray transforms in 3D in a layer-by-layer sampling scheme of a test-function 
-        with compact support in a three-dimensional unit ball (see also the README.md inside project 
-        for information about 'layer-by-layer sampling scheme');
-        the test-function must be given by an analytical expression in a separate C file
-  
-  * #### ray_grid (C)
-        computations of ray transforms in 3D in a layer-by-layer sampling scheme of a test-function 
-        with compact support in a three-dimensional unit ball (see the README.md inside project 
-        for information about 'layer-by-layer sampling scheme');
-        test-function is given by its values on a discrete grid in a three-dimensional cube
-  
-  * #### radon_reduction (C)
-        reduces the data given by ray transforms in 3D in layer-by-layer sampling scheme to the 
-        data given by Radon transforms in 3D
-  * #### wradon_inversion/iterative (Matlab / Octave)
-        iterative inversions of weighted Radon transforms in 3D. Takes on input initial starting point 
-        and data about the weight (coefficients in spherical harmonics expansion) and solves iteratively 
-        the related integral equation (see link [3] given above).
+  * #### bash (bash)
+        Scripts in bash for automatization of simulation-reconstruction processes. These use the compiled codes 
+		in folders below. 
 
+  * #### radon-inversion (Matlab / Octave / Python)
+        Octave/Matlab/Python scripts for inversion of classical Radon transforms in 2D/3D
+  
+  * #### radon-sampling (C)
+        C codes for simulating classical and weighted Radon transforms in 3D (along hyperplanes in 3D)
+  
+  * #### ray-sampling (C)
+        C codes for simulating classical and weighted ray transforms in 3D (along oriented lines in 3D)
+		for lines that are parallel XY-plane. This corresponds to scanner geometry, where the ray data are 
+		acquired in a set of parallel slices. 
+		
+  * #### reduction-algorithm (C)
+        This is the code related to the article : 
+		F. O. Goncharov, A geometric based preprocessing for weighted ray transforms with applications
+		in SPECT, arxiv:1911.05470
+		Basically, codes here allow to reduce data given weighted ray transforms in 3D (for example, 
+		those produced by 'ray_sampling') to weighted Radon transforms in 3D along planes. 
+		To understand, why it is worth of anything, look in the preprint above.
+  
+  * #### umot (C / Python) 
+        These codes are related to simulations and inversions of weighted Radon transforms in 2D 
+		arising in ultrasound-modulated optical tomography (UMOT).
+		
+  * #### ver-python (Python)
+        Codes in Python such as : simulation and inversion of Radon transforms in 2D, adjoint Radon transforms, 
+		computations of system-matrices in 2D for X-ray, PET, SPECT (I don't pursue write anything for 3D in 
+		Python because it becomes too slow, in C it is anyway faster)
+  
+  * #### weights-utilities (C)
+        Computations of weight-expansions for SPECT in 2D/3D.
+		
+  * #### EM-algorithms (C / Python)
+        Not a secret that EM-algorithms are extremely popular in tomographies, however, they no longer use Radon transforms (at least not explicitly). 
+		Here we place some implementations, inspired from lectures of prof. J. Fessler from the University of Michigan. 
+
+  * #### gradient-algorithms (C / Python / Matlab / Octave)
+        Some gradient algorithms (e.g., coordinate-wise descent) converge first at high-frequencies. Therefore, low-frequency initial approximations (from FBP for example)
+		are of definite interest for application these gradient schems in tomography. My interest here is to apply our approach : reduction from Pw to Rw -> FBP / Chang formula -> 
+		gradient descent, and to see the results. 
+		
+		
 ## Future plans
 
-  * The programs above are designed for computations of the classical ray/Radon transforms in 3D and their inversion, however, 
-  the goal of the project is to implement some iterative inversion algorithms for weighted Radon transforms (see [[2,3]](http://www.cmap.polytechnique.fr/~fedor.goncharov/publications.html)). 
-  
-  * The current version of the programs can be used to test Chang-type approximate inversions (described 
-    precisely in [[2]](http://www.cmap.polytechnique.fr/~fedor.goncharov/publications.html)) and Kunyansky-type inversions
-      
-  * Add more options for computations of classical Radon transforms (for example sampling grids: 
-      right now in Radon space the grid is 'Gauss-uniform', however, the set of directions on the sphere can have many 
-      different realizations (possibly with different properties of stability of algorithms))
-      
-  * Add options for tests with noise as for classical Radon transforms and for weighted Radon transforms (like SPECT, PET)
-      
+  * Initiate some sustainable documentation for given codes. 
+  * Make use of advanced, growing libraries in tomographical imaging (e.g., CASToR project castor-project.org)
+  * Implement some algorithms from machine-learning community (ANN's, Bayes methdos etc.)
       
       
 
