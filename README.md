@@ -1,13 +1,13 @@
 # Weighted ray / Radon transforms in 3D
 
-<p float="center">
-  <img src="images/image_1.png" width="360" />
-  <img src="images/image_2.png" width="360" />
-  <img src="images/image_3.png" width="360" />
+<p float="center" class="center">
+  <img src="images/image_1.png" width="250" height="250" />
+  <img src="images/image_2.png" width="250" height="250" />
+  <img src="images/image_3.png" width="250" height="250" />
 </p>
 
 This is project arose as a  part of my phd thesis conducted under the supervision of professor [Roman Novikov](http://www.cmap.polytechnique.fr/~novikov/). 
-The thesis is now [here](http://www.theses.fr/2019SACLX029). I update it very rarely, hopefully, this will change.
+The thesis is now [here](http://www.theses.fr/2019SACLX029). This page I update it very rarely, hopefully, this will change.
 
 The big goal is to develop new inversion methods for weighted (generalized) Radon transforms in Euclidean space. 
 The latter are of particular importance in various applications in the domain of inverse 
@@ -69,13 +69,13 @@ you can find in README.md in respective folders.
 
   * #### gradient-algorithms (C / Python / Matlab / Octave)
         Some gradient algorithms (e.g., coordinate-wise descent) converge first at high-frequencies. Therefore, low-frequency initial approximations (from FBP for example)
-		are of definite interest for application these gradient schems in tomography. My interest here is to apply our approach : reduction from Pw to Rw -> FBP / Chang formula -> 
+		are of definite interest for application of these gradient schems in tomography. My interest here is to apply our approach : reduction from Pw to Rw -> FBP / Chang formula -> 
 		gradient descent, and to see the results. 
 		
 		
 ## Future plans
 
-  * Initiate some sustainable documentation for given codes. 
+  * Write some sustainable documentation for given codes. 
   * Make use of advanced, growing libraries in tomographical imaging (e.g., CASToR project castor-project.org)
   * Implement some algorithms from machine-learning community (ANN's, Bayes methdos etc.)
       
