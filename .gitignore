@@ -1,8 +1,5 @@
 
 ./real_data/
-./ver-python/utilities/per_dec2d.py
-./ver-python/utilities/per_dec3d.py
-./ver-python/utilities/test_per_dec.py
 
 ./reduction-algorithm/binary/thesis_data/
 ./real-data/
@@ -11,7 +8,7 @@
 drafts-matlab/kunyansky-tests/
 drafts-matlab/
 radon-inversion/weighted/kunyansky-iterative/weight-correction
-./ver-python/utilities/exterior
+ver-python/utilities/exterior/
 
 *.zip
 *.pdf
