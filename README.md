@@ -7,7 +7,7 @@
 </p>
 
 This is project arose as a  part of my phd thesis conducted under the supervision of professor [Roman Novikov](http://www.cmap.polytechnique.fr/~novikov/). 
-The thesis is now [here](http://www.theses.fr/2019SACLX029). This page I update it very rarely, hopefully, this will change.
+The thesis is now [here](http://www.theses.fr/2019SACLX029). This page I update very rarely, hopefully, this will change.
 
 The big goal is to develop new inversion methods for weighted (generalized) Radon transforms in Euclidean space. 
 The latter are of particular importance in various applications in the domain of inverse 

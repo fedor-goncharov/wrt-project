@@ -45,17 +45,8 @@ def radon_transform2d_classical(image, phi, shift, radius):
                               *((line_pixels[1] > -1)*(line_pixels[1] < npixels))]
     
     
-    values = image[line_pixels[1, :], line_pixels[0, :]]
-    return np.sum(values) * step
-    
-    #integral = 0.0
-    #for point in line_pixels.T:
-        
-    #    # find pixel corresponding to point
-    #    if ((np.min(point) > -1) and (np.max(point) < npixels)):
-    #        integral += image[point[1]][point[0]]
-    #   
-    #return integral * step
+    line_values = image[line_pixels[1, :], line_pixels[0, :]]
+    return np.sum(line_values) * step
 
 def radon_transform2d_xray(image, nproj, nshift, radius, max_proj_angle=np.pi):
     """
