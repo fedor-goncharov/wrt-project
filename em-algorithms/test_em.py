@@ -39,8 +39,8 @@ noise_sinogram = np.reshape(noise_sinogram_vector, (64, 64))
 
 # run EM-algorithm
 avg_scattered = 3*np.ones((64,64))
-max_iterations = 100
-relative_err_level = 1e-2
+max_iterations = 5
+relative_err_level = 1e-3
 init_point = np.ones((64,64))
 
 reconstruction = EM_algorithm_emission2d(noise_sinogram, rt_system_matrix, avg_scattered, max_iterations, 

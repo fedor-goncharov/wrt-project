@@ -1,4 +1,6 @@
-Here we put realizations of several EM-algorithms for transmission and emission tomographies in 2D (in 3D it is difficult to make fast computations 
-without parallelizations). 
+Here we put realizations of several EM-algorithms for transmission and emission tomographies in 2D 
+(in 3D it is difficult to make fast computations without parallelizations, which are more difficult in Python; 
+maybe in future there will be realizations for 3D in written in C). 
 
-Implementations are mostly inspired by lecture notes of J. Fessler : Course EECS 516 - (see his website)
+Implementations are mostly inspired by lecture notes of J. Fessler from Michigan State University : Course EECS 516 - (see his website)
+https://web.eecs.umich.edu/~fessler/
