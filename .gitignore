@@ -11,7 +11,7 @@
 drafts-matlab/kunyansky-tests/
 drafts-matlab/
 radon-inversion/weighted/kunyansky-iterative/weight-correction
-./ver-python/utilities/exterior/
+./ver-python/utilities/exterior
 
 *.zip
 *.pdf
