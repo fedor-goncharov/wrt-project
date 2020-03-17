@@ -6,12 +6,16 @@ Created on Tue Mar 17 11:56:15 2020
 @author: fedor.goncharov.ol@gmail.com
 """
 
+"""
+    Run the script from the folder of the project 
+    (in order to have successfull imports)
+"""
 
 import numpy as np
 import matplotlib.pyplot as plt
 
 import sys
-sys.path.insert(0, "../ver-python/utilities")
+sys.path.insert(0, "../ver-python/utilities/")
 
 from radon_transform_matrix import radon_transform2d_xray_matrix
 from sinogram_noise_generator import generate_noise_emission
