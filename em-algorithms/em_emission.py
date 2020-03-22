@@ -46,6 +46,11 @@ def EM_algorithm_emission2d(sinogram_counts, syst_matrix, avg_scattered, max_ite
         err = np.linalg.norm(current_density_new - current_density, 'fro') / np.linalg.norm(current_density, 'fro')
         iteration += 1
         current_density = current_density_new
+        
+        # clean current variables
+        del(current_density_new)
+        del(current_counts)
+        
         print(f'Iteration {iteration},  relative l2-error : {err} \n')
 		
     return np.reshape(current_density, (npixels, npixels))
@@ -102,6 +107,11 @@ def EM_algorithm_emsission2d_mlem3(sinogram_counts, syst_matrix, avg_scattered, 
         err = np.linalg.norm(current_density_new - current_density, 'fro') / np.linalg.norm(current_density, 'fro')
         iteration += 1
         current_density = current_density_new
+        
+        # clean current variables
+        del(current_density_new)
+        del(current_counts)
+        
         print(f'Iteration {iteration}, relative l2-error : {err} \n')
 		
     return np.reshape(current_density, (npixels, npixels))

@@ -77,7 +77,7 @@ you can find in README.md in respective folders.
 
   * Write some sustainable documentation for given codes. 
   * Make use of advanced, growing libraries in tomographical imaging (e.g., CASToR project castor-project.org)
-  * Implement some algorithms from machine-learning community (ANN's, Bayes methdos etc.)
+  * Implement some algorithms from machine-learning community (ANN's, Bayesian methdos etc.)
       
       
 
