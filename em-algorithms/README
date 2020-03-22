@@ -2,5 +2,15 @@ Here we put realizations of several EM-algorithms for transmission and emission 
 (in 3D it is difficult to make fast computations without parallelizations, which are more difficult in Python; 
 maybe in future there will be realizations for 3D in written in C). 
 
-Implementations are mostly inspired by lecture notes of J. Fessler from Michigan State University : Course EECS 516 - (see his website)
-https://web.eecs.umich.edu/~fessler/
+Implementations are mostly inspired by lecture notes of J. Fessler from Michigan State University, 
+Course EECS 516; see also his website https://web.eecs.umich.edu/~fessler/
+
+EM-algorithms implemented : 
+
+  Emission-tomography
+     EM-algorithm of Shepp-Vardi (without acceleration using bounds for scattered photons)
+     Improved algorithm of Shepp-Vardi (EM-ML-3) (with acceleration using bounds for scattered photons)
+   
+  X-ray transmission tomography
+     EM Convex Newton-Raphson 1 (online computation of weights alpha_ij)
+     EM Convex Newton-Raphson 2 (precomputable weights alpha_ij)
