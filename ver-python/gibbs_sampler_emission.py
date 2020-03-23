@@ -55,7 +55,7 @@ def gibbs_sampler_emission_gamma(sinogram_counts, syst_matrix, avg_scattered,
     nshift = sinogram_counts.shape[0]
     nphi = sinogram_counts.shape[1]
     prior_shape = gamma_prior_params[0] # alpha - shape parameter for prior Gamma distribution
-    prior_scale = gamma_prior_params[1] # beta - scale parameter for prior Gamma distribution
+    prior_rate = gamma_prior_params[1] # beta - rate parameter for prior Gamma distribution
     
     # vectorize input 
     init_point_vec = np.reshape(init_point, (npixels*npixels, 1))
@@ -86,12 +86,12 @@ def gibbs_sampler_emission_gamma(sinogram_counts, syst_matrix, avg_scattered,
     
         # generate backprojected data n_ij, scattered
             for i in range(nshift*nphi):
-                backprojection_data[i, :] = np.random.multinomial(sinogram_counts_vec[i], multinomial_prob_matrix[i, :])[:-1]
+                backprojection_data[i, :] = np.random.multinomial(sinogram_counts_vec[i], multinomial_prob_matrix[i, :])[:-1] 
         # end of Step 1
         
         # Step 2 : generate intensities using backprojection data : lambda ~ p(lambda | n_ij, y) (Gamma)
-            array_shape = prior_shape + multinomial_prob_matrix.sum(axis=0, keepdims=True)[0, :-1]
-            array_scale = prior_scale + sensitivity_array
+            array_shape = prior_shape + backprojection_data.sum(axis=0, keepdims=True)[0, :]
+            array_scale = 1. / (prior_rate + sensitivity_array)
         # generate random image from posterior 
             current_density_vec = np.random.gamma(array_shape, array_scale).T
         # end of Step 2
