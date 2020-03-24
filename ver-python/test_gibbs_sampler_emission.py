@@ -33,7 +33,7 @@ image[RR < 0.25] = 0.
 # compute matrix for the Radon transform (this make take a while)
 system_matrix = radon_transform2d_xray_matrix(64, 64, 64, 1.0)
 
-sinogram_vector = rt_system_matrix.dot(np.reshape(image, (64*64, 1)))
+sinogram_vector = system_matrix.dot(np.reshape(image, (64*64, 1)))
 noise_sinogram_vector = generate_noise_emission(sinogram_vector, 200, 10)
 noise_sinogram = np.reshape(noise_sinogram_vector, (64, 64))
 
@@ -46,5 +46,12 @@ sample_size = 100
 posterior_sample = gibbs_sampler_emission_gamma(noise_sinogram, system_matrix, avg_scattered, gamma_prior_params, init_point, burn_in_size, sample_size)
 
 fig1 = plt.figure()
-plt.imshow(posterior_sample.sum(axis=2)/sample_size)
+plt.imshow(np.mean(posterior_sample, axis=2))
+plt.title("Posterior mean")
 plt.colorbar()
+
+fig2 = plt.figure()
+plt.imshow(np.std(posterior_sample, axis=2))
+plt.title("Posterior standard deviation")
+plt.colorbar()
+
