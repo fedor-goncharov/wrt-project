@@ -40,9 +40,9 @@ def gibbs_sampler_emission_gamma(sinogram_counts, syst_matrix, avg_scattered,
     syst_matrix : matrix of type (nshift*nphi, dim_im*dim_im) : system matrix of observation 
                                                                 data
     avg_scattered : matrix of type (nshift, nphi) : average number of scattered photons per LOR
-    gamma_prior_params : tuple of type (alpha, beta) : parameters for Gamma-distribution prior
+    gamma_prior_params : tuple of type (float, float) : parameters (shape, rate) for Gamma-distribution prior
+    init_point : matrix of type (dim_im, dim_im) : initial guess for the distribution
     burn_in_size : integer : number of iterations for burn-in 
-    init_point : matrix of type (dim_im, dim_im) : initial guess for the isotope distribution
     sample_size : integer : number of samples
     
 
@@ -84,7 +84,7 @@ def gibbs_sampler_emission_gamma(sinogram_counts, syst_matrix, avg_scattered,
                                                                                                   keepdims=True)
             multinomial_prob_matrix = np.append(multinomial_prob_matrix, multinomial_prob_matrix_last_column, axis=1)
     
-        # generate backprojected data n_ij, scattered
+        # generate backprojected data n_ij, scattered photons
             for i in range(nshift*nphi):
                 backprojection_data[i, :] = np.random.multinomial(sinogram_counts_vec[i], multinomial_prob_matrix[i, :])[:-1] 
         # end of Step 1
@@ -99,10 +99,9 @@ def gibbs_sampler_emission_gamma(sinogram_counts, syst_matrix, avg_scattered,
         # save the sample
             if (iteration > burn_in_size-1):
                 output_array[:, :, iteration-burn_in_size] = np.reshape(current_density_vec, (npixels, npixels))
-            
-        # end of loop 
+    # end of iteration loop 
                 
-        # clean memory in a loop (not efficient)
+        # clean memory in a loop (not very efficient, better set variables before loop)
             del(backprojection_data)
             del(multinomial_prob_matrix)
             del(multinomial_prob_matrix_nominator)
