@@ -105,7 +105,7 @@ def generate_noise_from_file_emission(input_filename, output_filename, N_max, N_
     output_array.tofile(fid, sep="")
     fid.close()
 
-def generate_noise_emission(sinogram, N_max, N_sc):
+def generate_noise_emission(sinogram, N_sc, observation_time):
     
     """
     function 
@@ -125,4 +125,4 @@ def generate_noise_emission(sinogram, N_max, N_sc):
     Example : 
        noisy_sinogram=generate_noise_emission(sinogram, 1e2, 3)
     """
-    return np.random.poisson(N_max*sinogram / np.max(sinogram[:]) + N_sc)
+    return np.random.poisson(observation_time * (sinogram + N_sc))

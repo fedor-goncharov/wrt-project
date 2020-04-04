@@ -8,8 +8,10 @@ Created on Sun Mar 22 20:30:56 2020
 
 import numpy as np
 
-def gibbs_sampler_emission_gamma(sinogram_counts, syst_matrix, avg_scattered,
-                                 gamma_prior_params, init_point, 
+def gibbs_sampler_emission_gamma(sinogram_counts, observation_time, 
+                                 syst_matrix, avg_scattered,
+                                 gamma_prior_params, 
+                                 init_point, 
                                  burn_in_size, sample_size):
     """
     Gibbs sampler for emission tomography with 
@@ -26,7 +28,9 @@ def gibbs_sampler_emission_gamma(sinogram_counts, syst_matrix, avg_scattered,
     Each sample is an image generated in two steps: 
         
         Step 1. Backprojection of observed data n_ij ~ p(n_ij | y, lambda)
-                p(n_ij, j | y, lambda) - multinomial
+        p(n_ij, j | y, lambda) - multinomial
+        
+        
         Step 2. Sampling of image lambda ~ p(lambda | n_ij, y)
         
     Remark
@@ -36,16 +40,30 @@ def gibbs_sampler_emission_gamma(sinogram_counts, syst_matrix, avg_scattered,
     
     Input
     -------
-    sinogram_counts : matrix of type (nshift, nphi) : photon counts along LORs
-    syst_matrix : matrix of type (nshift*nphi, dim_im*dim_im) : system matrix of observation 
-                                                                data
-    avg_scattered : matrix of type (nshift, nphi) : average number of scattered photons per LOR
-    gamma_prior_params : tuple of type (float, float) : parameters (shape, rate) for Gamma-distribution prior
-    init_point : matrix of type (dim_im, dim_im) : initial guess for the distribution
-    burn_in_size : integer : number of iterations for burn-in 
-    sample_size : integer : number of samples
+    sinogram_counts : 
+        matrix of type (nshift, nphi) : photon counts along LORs
     
-
+    observation_time : 
+        scalar : time for which the given photon counts were generated
+    
+    syst_matrix : 
+        matrix of type (nshift*nphi, dim_im*dim_im) : system matrix of observation 
+                                                                data
+    avg_scattered : 
+        matrix of type (nshift, nphi) : average number of scattered photons per LOR
+        
+    gamma_prior_params : 
+        tuple of type (float, float) : parameters (shape, rate) for Gamma-distribution prior
+        
+    init_point : 
+        matrix of type (dim_im, dim_im) : initial guess for the distribution
+        
+    burn_in_size : 
+        integer : number of iterations for burn-in 
+        
+    sample_size : 
+        integer : number of samples
+    
     Returns
     -------
         matrix of type (dim_im, dim_im, sample_size) containing all required samples
@@ -91,7 +109,7 @@ def gibbs_sampler_emission_gamma(sinogram_counts, syst_matrix, avg_scattered,
         
         # Step 2 : generate intensities using backprojection data : lambda ~ p(lambda | n_ij, y) (Gamma)
             array_shape = prior_shape + backprojection_data.sum(axis=0, keepdims=True)[0, :]
-            array_scale = 1. / (prior_rate + sensitivity_array)
+            array_scale = 1. / (prior_rate + sensitivity_array*observation_time)
         # generate random image from posterior 
             current_density_vec = np.random.gamma(array_shape, array_scale).T
         # end of Step 2
