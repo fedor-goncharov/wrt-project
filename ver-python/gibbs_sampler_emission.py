@@ -76,12 +76,12 @@ def gibbs_sampler_emission_gamma(sinogram_counts, observation_time,
     prior_rate = gamma_prior_params[1] # beta - rate parameter for prior Gamma distribution
     
     # vectorize input 
-    init_point_vec = np.reshape(init_point, (npixels*npixels, 1))
+    init_point_vec = np.reshape(init_point, (npixels*npixels, 1)) # initial guess for intensities
     sinogram_counts_vec = np.reshape(sinogram_counts, (nshift*nphi, 1))
     avg_scattered_counts_vec = np.reshape(avg_scattered, (nshift*nphi, 1))
     
     # precomputations, reserve output storage 
-    sensitivity_array = syst_matrix.sum(axis=0, keepdims=True) # returns a row vector
+    sensitivity_array = syst_matrix.sum(axis=0, keepdims=True) # returns a row vector sensitivity of a pixel
     output_array = np.zeros((npixels, npixels, sample_size))
     
     # initialize variable in a cycle for Gibbs sampler
@@ -92,19 +92,25 @@ def gibbs_sampler_emission_gamma(sinogram_counts, observation_time,
         # Step 1 : backprojection of observed data : n_ij ~ p(n_ij, y, lambda) (multinomial)
             backprojection_data = np.zeros((nshift*nphi, npixels*npixels))
     
-        # assemble probability matrix
-            multinomial_prob_matrix_denominator = syst_matrix.dot(current_density_vec) + avg_scattered_counts_vec
+        # assemble a probability matrix for multinomial distributions
+            multinomial_prob_matrix_denominator = syst_matrix.dot(current_density_vec) + avg_scattered_counts_vec 
             multinomial_prob_matrix_nominator = np.multiply(syst_matrix, current_density_vec.T)            
-            multinomial_prob_matrix = np.divide(multinomial_prob_matrix_nominator, multinomial_prob_matrix_denominator)
-            
-            
-            multinomial_prob_matrix_last_column = np.ones((nshift*nphi, 1)) - multinomial_prob_matrix.sum(axis=1, 
-                                                                                                  keepdims=True)
-            multinomial_prob_matrix = np.append(multinomial_prob_matrix, multinomial_prob_matrix_last_column, axis=1)
+            multinomial_prob_matrix = np.true_divide(multinomial_prob_matrix_nominator, multinomial_prob_matrix_denominator)
+            scatter_probability_column = np.divide(avg_scattered_counts_vec, multinomial_prob_matrix_denominator)
+            multinomial_prob_matrix = np.append(multinomial_prob_matrix, scatter_probability_column, axis=1)
+            # add last column for probability 1
+            #multinomial_prob_matrix_last_column = np.ones((nshift*nphi, 1)) - multinomial_prob_matrix.sum(axis=1, 
+            #                                                                                              keepdims=True)
+            #№multinomial_prob_matrix = np.append(multinomial_prob_matrix, multinomial_prob_matrix_last_column, axis=1)
     
         # generate backprojected data n_ij, scattered photons
             for i in range(nshift*nphi):
-                backprojection_data[i, :] = np.random.multinomial(sinogram_counts_vec[i], multinomial_prob_matrix[i, :])[:-1] 
+                last_idx = (multinomial_prob_matrix[i, :].nonzero())[0][-1] # last non-zero element
+                multinomial_prob_array = multinomial_prob_matrix[i, :(last_idx + 1)]
+    
+                backprojection_data[i, :] = np.concatenate(
+                    (np.random.multinomial(sinogram_counts_vec[i], multinomial_prob_array),
+                     np.zeros(npixels*npixels-last_idx)))[:-1]
         # end of Step 1
         
         # Step 2 : generate intensities using backprojection data : lambda ~ p(lambda | n_ij, y) (Gamma)
@@ -124,7 +130,6 @@ def gibbs_sampler_emission_gamma(sinogram_counts, observation_time,
             del(multinomial_prob_matrix)
             del(multinomial_prob_matrix_nominator)
             del(multinomial_prob_matrix_denominator)
-            del(multinomial_prob_matrix_last_column)
             del(array_shape)
             del(array_scale)
                 

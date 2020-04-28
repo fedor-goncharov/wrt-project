@@ -1,22 +1,16 @@
 #ifndef __RAY_GRID_INIT_H
 #define __RAY_GRID_INIT_H
 
-/* Grid parameters utilites */
-
-int parameters_alloc(int** parameters);
-int parameters_init(char* filename, int* parameters);
-int parameters_clean(int* parameters);
-
 /* Test-function utilities */
 
-int tfunction_values_alloc(int ngrid, double**** values);
-int tfunction_values_init(char* input_filename, int ngrid, double*** values);
-int tfunction_values_clean(int ngrid, double*** values);
+int function_values_alloc(int npixels, int nslices, double ****function_values);
+int function_values_init(char *input_filename, int ngrid, int nslices, double ***function_values);
+int function_values_clean(int npixels, int nslices, double ***function_values);
 
 /* Radon grid utilites */
 
-int ray_grid_alloc(int nshift, int nphi, double** shift, double** phi);
-int ray_grid_init(int nshift, int nphi, double* shift, double* phi);
+int ray_grid_alloc(int nshift, int nphi, double **shift, double **phi);
+int ray_grid_init(int nshift, int nphi, double* shift, double* phi, double radius);
 int ray_grid_clean(double* shift, double* phi);
 
 

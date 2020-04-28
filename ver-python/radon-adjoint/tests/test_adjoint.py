@@ -26,11 +26,16 @@ from adjradon3d import adjradon3d
 
 
 # test adjoint2d.py
-filename = 'test-source/test-adjradon2d.csv'
+filename = '~/wrt-link/reduction-algorithm/binary/thesis_data/ph2_att_weak_ray_slice.csv'
 ngrid = 129
 nphi = 128
 nshift = 129
-adjoint = adjradon2d(filename, nphi, nshift, 1.0, 2.0, 256)
+adjoint = adjradon2d(filename, nphi, nshift, 1.0, 1.0, 512)
+
+radon_data = pd.read_csv(filename, header=None, sep="\n")
+radon_values = radon_data.values[:]
+radon_values = np.reshape(radon_values, (nphi, nshift), order="F")
+
 
 plt.imshow(adjoint)
 plt.axis('off')

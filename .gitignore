@@ -9,6 +9,14 @@ drafts-matlab/kunyansky-tests/
 drafts-matlab/
 radon-inversion/weighted/kunyansky-iterative/weight-correction
 ver-python/utilities/exterior/
+radon-sampling/classical/radon_analytic
+radon-sampling/weighted/wradon_analytic
+ray-sampling/classical/ray_analytic
+ray-sampling/weighted/wray_analytic
+ver-python/asymptotic_fraction_missinfo.py
+ver-python/fisher_matrix.py
+ver-python/test_gibbs_sampler_emission2.py
+
 
 *.zip
 *.pdf
@@ -20,7 +28,6 @@ ver-python/utilities/exterior/
 *.png
 *.jpeg
 *.jpg
-*.m
 *.pyc
 *.gif
 *~

@@ -1,5 +1,7 @@
 #include <math.h>
- 
+
+// __attribute__((always_inlne)) is for acceleration
+
 inline double cell_linear_interp(double x, double v1, double v2) __attribute__((always_inline));
 double cell_linear_interp(double x, double v1, double v2) {
   return ((1-x)*v1 + x*v2); 

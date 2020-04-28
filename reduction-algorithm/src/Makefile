@@ -5,10 +5,10 @@ OBJ=reduction.o init.o slicing.o
 ONAME=../binary/radon_reduction
 
 %.o: %.c
-	$(CC) -c -o $@ $< $(LIBS)
+	$(CC) -c -o $@ $< -O3 $(LIBS)
 
 $(ONAME): $(OBJ)
-	$(CC) -o $@ $^ $(LIBS)
+	$(CC) -o $@ $^ -O3 $(LIBS)
 
 .PHONY: clean
 

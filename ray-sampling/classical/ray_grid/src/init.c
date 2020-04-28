@@ -6,104 +6,26 @@
 
 #define MAX_COMMAND_SIZE 128
 
-/* Grid parameters */ 
-
-int parameters_alloc(int** parameters) {
-  *parameters = (int*)malloc(4 * sizeof(int));
-  
-  return 0;
-}
-int parameters_init(char* filename, int* parameters) {
-  
-  FILE *f;
-  char buffer[ MAX_COMMAND_SIZE ];
-  
-  f = fopen(filename, "r");
-  if (f == NULL) {
-    fprintf(stderr, "Recieved call %s while opening %s. \n", strerror(errno), filename);
-    return errno;
-  }
-  int count;
-  
-  count = fscanf(f, "%d %[^\n]\n", &(parameters[0]), buffer);
-  if (count == EOF) {
-     if (ferror(f)) {
-        perror("Init parameters : fscanf parameters 0 : EOF failure\n");
-     }  else {
-        fprintf(stderr, "Error: fscanf parameters 0 : reached end of file before it was expected. \n");
-     }
-     return -1;
-  } else if (count != 2) {
-         fprintf(stderr, "Error: fscanf parameters 0 : matching failure, fscanf expected 1 integer value.\n");
-    return -1;
-  }
-  
-  count = fscanf(f, "%d %[^\n]\n", &(parameters[1]), buffer);
-  if (count == EOF) {
-     if (ferror(f)) {
-        perror("Init parameters : fscanf parameters 1 : EOF failure\n");
-     }  else {
-        fprintf(stderr, "Error: fscanf parameters 1 : reached end of file before it was expected. \n");
-     }
-     return -1;
-  } else if (count != 2) {
-         fprintf(stderr, "Error: fscanf parameters 1 : matching failure, fscanf expected 1 integer value.\n");
-         return -1;
-  }
-  count = fscanf(f, "%d %[^\n]\n", &(parameters[2]), buffer);
-  if (count == EOF) {
-     if (ferror(f)) {
-        perror("Init parameters : fscanf parameters 2 : EOF failure\n");
-     }  else {
-        fprintf(stderr, "Error: fscanf parameters 2 : reached end of file before it was expected. \n");
-     }
-     return -1;
-  } else if (count != 2) {
-         fprintf(stderr, "Error: fscanf parameters 2 : matching failure, fscanf expected 1 integer value.\n");
-         return -1;
-  }
-  count = fscanf(f, "%d %[^\n]\n", &(parameters[3]), buffer);
-  if (count == EOF) {
-     if (ferror(f)) {
-        perror("Init parameters : fscanf parameters 3 : EOF failure\n");
-     }  else {
-        fprintf(stderr, "Error: fscanf parameters 3 : reached end of file before it was expected. \n");
-     }
-     return -1;
-  } else if (count != 2) {
-         fprintf(stderr, "Error: fscanf parameters 3 : matching failure, fscanf expected 1 integer value.\n");
-         return -1;
-  }
-  
-  fclose(f);
-  return 0;	//exit sucess
-  
-}
-
-int parameters_clean(int* parameters) {
-  free(parameters);
-  return 0;
-}
 
 /* Initial values of the test-function */
 
-int tfunction_values_alloc(int ngrid_tfunc, double**** values) {
+int function_values_alloc(int npixels, int nslices, double**** values) {
   int i,j;
   
-  *values = (double***)malloc(sizeof(double**) * ngrid_tfunc);
-  for (i = 0; i < ngrid_tfunc; ++i) {
-      (*values)[i] = (double**)malloc(sizeof(double*) * ngrid_tfunc);
+  *values = (double***)malloc(sizeof(double**) * nslices);
+  for (i = 0; i < nslices; ++i) {
+      (*values)[i] = (double**)malloc(sizeof(double*) * npixels);
   }
   
-  for (i = 0; i < ngrid_tfunc; ++i) {
-      for (j = 0; j < ngrid_tfunc; ++j) { 
-          (*values)[i][j] = (double*)malloc(sizeof(double) * ngrid_tfunc);
+  for (i = 0; i < nslices; ++i) {
+      for (j = 0; j < npixels; ++j) { 
+          (*values)[i][j] = (double*)malloc(sizeof(double) * npixels);
       }
   }
   return 0;  
 }
 
-int tfunction_values_init(char* filename, int ngrid_tfunc, double*** values) {
+int function_values_init(char* filename, int npixels, int nslices, double *** values) {
   FILE *f;
   
   f = fopen(filename, "r");
@@ -113,14 +35,14 @@ int tfunction_values_init(char* filename, int ngrid_tfunc, double*** values) {
      return errno;
   }
   
-  int xi, yi, zi;
+  int x_i, y_i, z_i;
   int count;
-  for (xi = 0; xi < ngrid_tfunc; ++xi)
-    for (yi = 0; yi < ngrid_tfunc; ++yi)
-      for (zi = 0; zi < ngrid_tfunc; ++zi) {
+  for (z_i = 0; z_i < nslices; ++z_i)
+    for (x_i = 0; x_i < npixels; ++x_i)
+      for (y_i = 0; y_i < npixels; ++y_i) {
 	
 	//read file line-by-line 
-	count = fscanf(f, "%lf\n", &(values[xi][yi][zi]));
+	count = fscanf(f, "%lf\n", &(values[z_i][x_i][y_i]));
 	if (count == EOF) {
 	   if (ferror(f)) {
 	      perror("Init test-function values : fscanf read value : EOF failure\n");
@@ -137,14 +59,14 @@ int tfunction_values_init(char* filename, int ngrid_tfunc, double*** values) {
   fclose(f);  
   return 0;	//exist sucess
 }
-int tfunction_values_clean(int ngrid_tfunc, double*** values) {
-  int i,j;
-  for (i = 0; i < ngrid_tfunc; ++i) {
-      for (j = 0; j < ngrid_tfunc; ++j) {
+int function_values_clean(int npixels, int nslices, double*** values) {
+  int i, j;
+  for (i = 0; i < nslices; ++i) {
+      for (j = 0; j < npixels; ++j) {
           free(values[i][j]);
       }
   }
-  for (i = 0; i < ngrid_tfunc; ++i) {
+  for (i = 0; i < nslices; ++i) {
       free(values[i]);
   }
   free(values);
@@ -160,12 +82,12 @@ int ray_grid_alloc(int nshift, int nphi, double** shift, double** phi) {
   *phi = (double*)malloc(nphi * sizeof(double));    
   return 0;
 }
-int ray_grid_init(int nshift, int nphi, double* shift, double* phi) {
+int ray_grid_init(int nshift, int nphi, double* shift, double* phi, double radius) {
   //init shift
-  const double dshift = 2.0 / (nshift - 1);
+  const double dshift = 2.0*radius / (nshift - 1);
   int i_shift; 
   for (i_shift = 0; i_shift < nshift; ++i_shift)
-    shift[i_shift] = (-1.0) + i_shift * dshift;
+    shift[i_shift] = (-1.0)*radius + i_shift * dshift;
   
   //init phi 
   const double dphi = (2 * M_PI) / nphi;
@@ -235,13 +157,15 @@ void chunks_aggregate(char* output_filename, char ** chunks_filenames, int nchun
   out = fopen(output_filename, "w");
   
   int i_file;
+  char *buffer = (char*)malloc(1024*1024*sizeof(char));
+
+
   for (i_file = 0; i_file < nchunks; ++i_file) {
     //write data from local files (*fp) to output file (*out)
     FILE *fp;
     fp = fopen(chunks_filenames[i_file], "r");
     
     //transmit by chunks of 1 mb
-    char buffer[1024 * 1024];
     int size;
     do {
       size = fread(buffer, 1, sizeof(buffer), fp);
@@ -249,8 +173,8 @@ void chunks_aggregate(char* output_filename, char ** chunks_filenames, int nchun
       fwrite(buffer, 1, size, out);
     } while (size == sizeof(buffer));
     //reached EOF, close local file
-    
     fclose(fp);
     //printf("  Data from %s has been sucessfully transmitted to %s\n", chunks_filenames[i_file], output_filename);
  }
+ fclose(out);
 }

@@ -3,9 +3,14 @@
 #include <getopt.h>
 #include <assert.h>
 #include <omp.h>
-#include <sys/time.h> //measure of parallel time evaluation
+#include <sys/time.h> //for measurement of physical evaluation time
 #include "init.h"
 #include "integral.h"
+
+#include <unistd.h>
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <fcntl.h>
 
 #define FILENAME_MAXSIZE 128
 /*
@@ -25,7 +30,7 @@
  * 
  * 
  * IMPORTANT : It is always assumed that the test-function is compactly supported with support in the
- * centered ball of radius given in launch parameters, which is given in the arguments.
+ * centered ball of radius given in launch parameters.
  *
  * The result is stored in a separate binary file (-o filename) in the following order: 
  *
@@ -62,18 +67,22 @@ void readme_generate(char *input_filename, char *output_filename, int npixels, i
   fclose(readme_file);
 }
 
+int stdout_supress() {
+  int ret = dup(1);
+  int nullfd = open("/dev/null", O_WRONLY);
+  
+  dup2(nullfd, 1);
+  close(nullfd);
 
-/* 
- * ****************************** HANDLING INPUT *****************************
- */
-
+  return ret;
+}
 
 const char* program_name;
 
 /* Prints usage information to STREAM (stdout or stderr) */
 
 void print_usage(FILE* stream) {
-  fprintf(stream, "Usage: %s -p (filename) -i (filename) -o (filename) -n (number)\n", program_name);
+  fprintf(stream, "Usage: %s -i (filename) -o (filename) -n (nthreads) [ARGS]\n", program_name);
   fprintf(stream, 
 	  "   -h --help      no_arg     Display this usage information.\n"
 	  "   -p --nphi      integer    Number of phi angles.\n"
@@ -83,7 +92,8 @@ void print_usage(FILE* stream) {
 	  "   -g --npixels   integer    Number of pixels per dimension for the test-function.\n"
 	  "   -i --input     string     Path to input file with test-function.\n"
 	  "   -o --output    string     Path to output file.\n"
-	  "   -n --nthreads  integer    Number of OpenMP threads for parallelization.\n");
+	  "   -n --nthreads  integer    Number of OpenMP threads for parallelization.\n"
+	  "   -v --verbose   no_arg     Print extra information during computations.\n");
 }
 
 /* 
@@ -109,12 +119,13 @@ int main(int argc, char * argv[]) {
     {"input", required_argument, NULL, 'i'}, 
     {"output", required_argument, NULL, 'o'},
     {"nthreads", required_argument, NULL, 'n'},
+    {"verbose", no_argument, NULL, 'v'}, 
     {NULL, 0, NULL, 0}				/* Required at the end of array */
   };
 
   char *input_filename; 
   char *output_filename;
-  int nphi, ntheta, nshift, npixels, nthreads;
+  int nphi, ntheta, nshift, npixels, nthreads=1, std_output = 0;
   double radius;
   
   program_name = argv[0];
@@ -126,6 +137,7 @@ int main(int argc, char * argv[]) {
     switch (next_option) {
       case 'h':
 	print_usage(stdout);
+	exit(EXIT_SUCCESS);
       case 'p':
         nphi = atoi(optarg);
 	assert(nphi > 0);
@@ -164,6 +176,8 @@ int main(int argc, char * argv[]) {
 	assert(nthreads > 0);
 	printf("Number of threads: %d\n", nthreads);
 	break;
+      case 'v':
+        std_output = 1;
       case ':': /* missing argument */ 
 	fprintf(stderr, "%s: option '-%c' requires an argument\n",
 		argv[0], optopt);
@@ -183,11 +197,15 @@ int main(int argc, char * argv[]) {
   }
   
   /**************************************** START INITIALIZATIONS *****************************************/
-  
+
+  int fd_stdout;
+  if (std_output == 0) {
+    fd_stdout = stdout_supress();
+  }
   
   /* Init values of the test function on the grid */
   printf("  Initializing data for the test-function...");
-  double*** function_values;
+  double ***function_values;
   if (function_values_alloc(npixels, &function_values) != 0) {
      perror("Aborting : function_values_alloc\n");
      exit(EXIT_FAILURE);
@@ -252,13 +270,16 @@ int main(int argc, char * argv[]) {
 		               double radon_transform = plane_integral(function_values, npixels, 
 								       phi[i_phi], theta[i_theta], shift[i_shift],
 								       radius);
-			       local_thread_data[idx] = radon_transform;
+			             local_thread_data[idx] = radon_transform;
 		               idx = idx + 1; 
                 }
             }
         }
+
 	//open ouptut file, write down data in one iteration, free memory
-        FILE *thread_file_output;
+        
+	FILE *thread_file_output;
+
         thread_file_output = fopen(chunks_filenames[thread_ID], "w");
 	fwrite(local_thread_data, sizeof(double), block_size * nphi * ntheta, thread_file_output);
 	free(local_thread_data);

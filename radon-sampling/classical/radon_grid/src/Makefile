@@ -5,7 +5,7 @@ DEPS=init.h integral.h interp.h
 OBJ=radon_grid.o init.o integral.o interp.o
 
 %.o: %.c
-	$(CC) -c -o $@ $< $(CFLAGS) $(LIBS) 
+	$(CC) -c -o $@ $< $(CFLAGS) $(LIBS) -O3
 
 ../binary/radon_grid: $(OBJ)
 	$(CC) -o $@ $^ $(CFLAGS) $(LIBS)
