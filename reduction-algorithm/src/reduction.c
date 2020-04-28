@@ -5,6 +5,11 @@
 #include <omp.h>      // parallelization in the set of 2d-planes
 #include <sys/time.h> // measure of parallel time evaluation
 
+#include <unistd.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+
 #include "init.h"
 #include "slicing.h"
 
@@ -40,6 +45,17 @@
   *     nslices : number of z-slices for the ray transforms, also assumes to be the number of pixels in the underline image 
   */
 
+int stdout_supress() {
+
+    int fd_stdout = dup(1);
+    int nullfd = open("/dev/null", O_WRONLY);
+
+    dup2(nullfd, 1);
+    close(nullfd);
+
+    return fd_stdout;
+}
+
 
 int main(int argc, char ** argv) {
 
@@ -54,7 +70,7 @@ if (argc == 1) {
 
   int next_option;
   
-  const char* short_options = "hs:p:z:t:i:o:n:";
+  const char* short_options = "hs:p:z:t:i:o:n:v";
   const struct option long_options[] = {
     {"help", no_argument, NULL, 'h'},
     {"nshift", required_argument, NULL, 's'},
@@ -64,6 +80,7 @@ if (argc == 1) {
     {"input_file", required_argument, NULL, 'i'},
     {"output_file", required_argument, NULL, 'o'},
     {"nthreads", required_argument, NULL, 'n'},
+    {"verbose", no_argument, NULL, 'v'},
     {NULL, 0, NULL, 0}				/* Required at the end of array */
   };
   
@@ -71,7 +88,7 @@ if (argc == 1) {
 
   char* input_filename;
   char* output_filename;
-  int   nthreads = 1;
+  int   nthreads = 1, std_output = 0;
 
   // default values
   int nshift;
@@ -116,6 +133,9 @@ if (argc == 1) {
 	     assert(nthreads > 0);
 	     printf("Number of threads: %d\n", nthreads);
 	     break;
+      case 'v':
+	     std_output = 1;
+	     break;
       case ':': /* missing argument */
 	     fprintf(stderr, "%s: option '-%c' requires an argument\n",
        argv[0], optopt);
@@ -137,6 +157,10 @@ if (argc == 1) {
 
   //-------------------------------------- INITIALIZATIONS ------------------------------------------------------------------------------/
 
+  int fd_stdout;
+  if (std_output == 0) {
+    fd_stdout = stdout_supress();
+  }
 
   // --------------------------------------------Read ray transform data from file --------------------------------------------------------/
 
