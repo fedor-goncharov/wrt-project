@@ -24,44 +24,37 @@ Here it will be the link to a pdf file with minimal information about the subjec
 
 ## Sructure of the project
 
-Here I briefly explain for what each program is folder contains.
 Details about compilation, usage, input/output, parameters, usage, etc.,
 you can find in README.md in respective folders.
 
   * #### bash (bash)
-        Scripts in bash for automatization of simulation-reconstruction processes. These use the compiled codes
-		in folders below.
+        Bash scripts for automatization of simulation-reconstruction processes (to be added)
 
   * #### radon-inversion (Matlab / Octave / Python)
         Octave/Matlab/Python scripts for inversion of classical Radon transforms in 2D/3D
 
   * #### radon-sampling (C)
-        C codes for simulating classical and weighted Radon transforms in 3D (along hyperplanes in 3D)
+        C codes for simulating classical and weighted Radon transforms along 2-hyperplanes in 3D)
 
   * #### ray-sampling (C)
-        C codes for simulating classical and weighted ray transforms in 3D (along oriented lines in 3D)
-		for lines that are parallel XY-plane. This corresponds to scanner geometry, where the ray data are
-		acquired in a set of parallel slices.
+        C codes for simulating classical and weighted ray transforms in 3D along oriented lines in 
+		the slice-by-slice framework
 
   * #### reduction-algorithm (C)
         This is the code related to the article :
 		F. O. Goncharov, A geometric based preprocessing for weighted ray transforms with applications
-		in SPECT, arxiv:1911.05470
-		Basically, codes here allow to reduce data given weighted ray transforms in 3D (for example,
-		those produced by 'ray_sampling') to weighted Radon transforms in 3D along planes.
-		To understand, why it is worth of anything, look in the preprint above.
+		in SPECT, arxiv:1911.05470, 2019 (to appear in JIIP) 
+		Basically, codes here allow to reduce data given by weighted ray transforms in 3D (for example,
+		those produced by 'ray-sampling') to weighted Radon transforms in 3D along 2-planes.
+		To understand why it is worth of anything, look in the preprint above.
 
-  * #### umot (C / Python)
-        These codes are related to simulations and inversions of weighted Radon transforms in 2D
-		arising in ultrasound-modulated optical tomography (UMOT).
-
-  * #### ver-python (Python)
+  * #### ver-python (python)
         Codes in Python such as : simulation and inversion of Radon transforms in 2D, adjoint Radon transforms,
 		computations of system-matrices in 2D for X-ray, PET, SPECT (I don't pursue write anything for 3D in
 		Python because it becomes too slow, in C it is anyway faster)
 
   * #### weights-utilities (C)
-        Computations of weight-expansions for SPECT in 2D/3D.
+        Computations of weight expansions in spherical harmonics in angle variable for SPECT in 2D/3D.
 
   * #### EM-algorithms (C / Python)
         Not a secret that EM-algorithms are extremely popular in tomographies, however, they no longer use Radon transforms (at least not explicitly).
@@ -75,6 +68,6 @@ you can find in README.md in respective folders.
 
 ## Future plans
 
-  * Write some sustainable documentation for given codes.
-  * Make use of advanced, growing libraries in tomographical imaging (e.g., CASToR project castor-project.org)
+  * Write some sustainable documentation for given codes...
+  * Make use of advanced, growing libraries in tomographical imaging (e.g., CASToR project: www.castor-project.org)
   * Implement some algorithms from machine-learning community (ANN's, Bayesian methdos etc.)
