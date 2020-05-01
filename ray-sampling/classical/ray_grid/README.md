@@ -1,47 +1,47 @@
 ## General description
 
-Program computes ray integrals of a test-function given on a uniform
+Program computes ray integrals of a test-function given on a uniform  
 rectangular grid in 3D in a slice-by-slice, parallel-beam geometry.
 
-Grid is parameterized by 2 parameters - **npixels**, **nslices**, that is the
-grid is represented as a three dimensional array (npixels, npixels, nslices)
-(one may think of coordinates XYZ, where grid has **nslices** in z-direction).
-Test-function is given by its values on a grid in a separate binary file,
+Grid is parameterized by 2 parameters - **npixels**, **nslices**, that is the  
+grid is represented as a three dimensional array (npixels, npixels, nslices)  
+(one may think of coordinates XYZ, where grid has **nslices** in z-direction).  
+Test-function is given by its values on a grid in a separate binary file,  
 such that reading a linear array of floats corresponds to the following
 order:
 
 		`for z in nslices
-		 	for x in npixels
-		 		for y in npixels
-		 				test-function(x,y,z)
-		 		endfor
-		 	endfor
+		  for x in npixels
+		   for y in npixels
+		 	 test-function(x,y,z)
+		   endfor
+		  endfor
 		 endfor`
 
-In each z-slice function must be supported only in a disk inscribed in the
+In each z-slice function must be supported only in a disk inscribed in the  
 square (npixels, npixels).
 
-In each z-slice **nphi** projections are taken uniformly spread over [0, 2pi].
-Each projection consists of **nshift** parallel rays varying uniformly in
-[-**radius**, **radius**], where **radius** is the length of the side
+In each z-slice **nphi** projections are taken uniformly spread over [0, 2pi].  
+Each projection consists of **nshift** parallel rays varying uniformly in  
+[-**radius**, **radius**], where **radius** is the length of the side  
 of the square slice.
 
-Integration along each ray is performed via Simpson's rule and function
-is assumed to be continuous linear between nodes - nodes of the grid.
-By default **2D linear interpolation** is used when computing values
+Integration along each ray is performed via Simpson's rule and function  
+is assumed to be continuous linear between nodes - nodes of the grid.  
+By default **2D linear interpolation** is used when computing values  
 of the function between the nodes.
 
-Output is stored in a separate binary file in the following order:
+Output is stored in a separate binary file in the following order:  
 
 	 `for z in nslices
-		 for shift in nshifts
-			 for phi in nphi
-					 ray-transform(f)(z, shift, phi)
-			 endfor
-		 endfor
-		endfor`
+	   for shift in nshifts
+	    for phi in nphi
+		  ray-transform(f)(z, shift, phi)
+		endfor
+	   endfor
+	  endfor`
 
-Code can be run in **parallel**, where work for z-slices is splitteed
+Code can be run in **parallel**, where work for z-slices is splitted  
 uniformly over OpenMP threads.
 
 ## Input arguments
