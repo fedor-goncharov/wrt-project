@@ -2,7 +2,7 @@ import numba as nb
 import numpy as np
 
 @nb.njit
-def sidon_line_projector(image, phi, shift, radius=1.0):
+def siddon_line_projector(image, phi, shift, radius=1.0):
     """
         Sidon line projector - fast and exact execution algorithm
         for the ray transform along the line
